@@ -1,0 +1,193 @@
+/* ===========================
+   STRUTTURA GENERALE
+   =========================== */
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #f1f1f1;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 95%;
+    max-width: 1100px;
+    margin: 25px auto;
+}
+
+.title {
+    text-align: center;
+    color: #b30000;
+    font-size: 2rem;
+    margin-bottom: 0;
+}
+
+.subtitle {
+    text-align: center;
+    margin-top: 4px;
+    color: #555;
+    font-size: 0.95rem;
+}
+
+footer {
+    text-align: center;
+    color: #666;
+    font-size: 0.85rem;
+    margin-top: 30px;
+    padding: 10px;
+}
+
+/* ===========================
+   FLASH MESSAGES
+   =========================== */
+
+.flash-area {
+    margin: 15px 0;
+}
+
+.flash {
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+}
+
+.flash-success {
+    background: #c9f0cf;
+    border: 1px solid #6fb57a;
+}
+
+.flash-warning {
+    background: #ffe5b5;
+    border: 1px solid #e0a13b;
+}
+
+.flash-error,
+.flash-danger {
+    background: #fbe5e5;
+    border: 1px solid #e4b1b1;
+}
+
+.flash-info {
+    background: #e0ecff;
+    border: 1px solid #8ba9e6;
+}
+
+/* ===========================
+   PANNELLI
+   =========================== */
+
+.panel {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 28px;
+}
+
+.panel h2 {
+    margin-top: 0;
+    color: #333;
+    font-size: 1.25rem;
+}
+
+.danger-panel {
+    border: 2px solid #b30000;
+}
+
+/* ===========================
+   GRID E BOTTONI
+   =========================== */
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.btn {
+    display: block;
+    padding: 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #fff;
+    font-weight: 600;
+    text-align: center;
+    transition: background 0.2s ease-in-out;
+    font-size: 0.95rem;
+}
+
+.blue { background: #004b9e; }
+.blue:hover { background: #003b7c; }
+
+.green { background: #1e8f3f; }
+.green:hover { background: #176f30; }
+
+.red { background: #b30000; }
+.red:hover { background: #800000; }
+
+.grey { background: #777; }
+.grey:hover { background: #555; }
+
+/* ===========================
+   BOX STATISTICHE
+   =========================== */
+
+.stats-grid {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.stat-box {
+    flex: 1 1 200px;
+    background: #fafafa;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+.stat-title {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.stat-value {
+    font-size: 1.8rem;
+    color: #b30000;
+    font-weight: bold;
+    display: block;
+    margin-top: 3px;
+}
+
+.update-box {
+    text-align: center;
+    padding: 12px;
+    background: #fafafa;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    font-size: 0.95rem;
+    margin-top: 8px;
+}
+
+/* ===========================
+   RESPONSIVE
+   =========================== */
+
+@media (max-width: 900px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+        flex-direction: column;
+    }
+}

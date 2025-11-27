@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <title>Compendio Atti – Avvio</title>
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    :root { --rosso:#b30000; --grigio:#666; --bg:#fafafa; }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; display:flex; align-items:center; justify-content:center;
+      background:var(--bg); font-family:Arial, Helvetica, sans-serif; color:#222;
+    }
+    .card{
+      width:min(560px, 92vw);
+      background:#fff; border-radius:14px; box-shadow:0 8px 24px rgba(0,0,0,.08);
+      padding:28px 26px; text-align:center;
+    }
+    .logo{height:84px; margin-bottom:10px;}
+    h1{margin:6px 0 2px; font-size:22px; font-weight:700; color:#000;}
+    h2{margin:0 0 16px; font-size:16px; font-weight:400; color:var(--grigio);}
+    .spinner{
+      margin:14px auto 16px; width:64px; height:64px; border-radius:50%;
+      border:8px solid #eee; border-top:8px solid var(--rosso);
+      animation:spin 1s linear infinite;
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .msg{font-size:15px; color:#333; line-height:1.45}
+    .fineprint{margin-top:14px; font-size:12px; color:#777}
+    .btn{
+      margin-top:16px; display:inline-block; padding:10px 14px; border-radius:8px;
+      border:1px solid #ddd; background:#fff; text-decoration:none; color:#333;
+      transition:all .15s ease-in-out;
+    }
+    .btn:hover{border-color:#bbb}
+    .hidden{display:none}
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <img class="logo" src="static/logo_comune.png" alt="Comune di Milano" onerror="this.style.display='none'">
+    <h1>Compendio Atti</h1>
+    <h2>Avvio in corso…</h2>
+
+    <div class="spinner" aria-hidden="true"></div>
+
+    <p class="msg" id="status">
+      Sto avviando il server locale. Verrai reindirizzato automaticamente appena pronto.
+    </p>
+
+    <a id="open-manual" class="btn hidden" href="http://127.0.0.1:5001/" rel="noreferrer">Apri manualmente</a>
+
+    <p class="fineprint" id="hint" aria-live="polite"></p>
+  </div>
+
+  <script>
+    (function () {
+
+      const TARGET_HOME = "http://127.0.0.1:5001/";
+      const PROBE_JS    = "http://127.0.0.1:5001/boot-ready.js";
+      const MAX_WAIT_MS = 60000;
+
+      let attempts  = 0;
+      let startedAt = Date.now();
+
+      const hintEl   = document.getElementById("hint");
+      const manualEl = document.getElementById("open-manual");
+
+      function setHint(t){ hintEl.textContent = t; }
+
+      // Timeout sicurezza
+      let timeoutHandle = setTimeout(() => {
+        setHint("Timeout superato. Apertura della home…");
+        window.location.href = TARGET_HOME;
+      }, MAX_WAIT_MS);
+
+      function redirectNow() {
+        clearTimeout(timeoutHandle);
+        setHint("Server pronto. Reindirizzamento…");
+        window.location.replace(TARGET_HOME);
+      }
+
+      function poll() {
+        attempts++;
+
+        const s = document.createElement("script");
+        s.src = PROBE_JS + "?t=" + Date.now();
+        s.defer = true;
+
+        s.onload = () => {
+          if (window.__COMPENDIO_READY__ === true) {
+            redirectNow();
+          } else {
+            retry(s);
+          }
+        };
+
+        s.onerror = () => {
+          const elapsed = (Date.now() - startedAt) / 1000;
+
+          if (elapsed < 5)
+            setHint("Controllo disponibilità del server…");
+          else if (elapsed < 15)
+            setHint("Il server si sta avviando, attendi qualche secondo…");
+          else if (elapsed < 30)
+            setHint("Quasi pronto…");
+          else if (elapsed < 45)
+            setHint("Il server potrebbe impiegare un po' di più, continua ad attendere…");
+          else {
+            setHint("Se tarda ancora, prova il pulsante qui sotto.");
+            manualEl.classList.remove("hidden");
+          }
+
+          retry(s);
+        };
+
+        document.body.appendChild(s);
+      }
+
+      function retry(scriptEl) {
+        try { scriptEl.remove(); } catch(_) {}
+        window.__COMPENDIO_READY__ = false;
+        setTimeout(poll, backoff(attempts));
+      }
+
+      function backoff(n) {
+        return 500 + Math.min(1100, n * 200); // max 1600ms
+      }
+
+      window.__COMPENDIO_READY__ = false;
+      poll();
+
+    })();
+  </script>
+</body>
+</html>
